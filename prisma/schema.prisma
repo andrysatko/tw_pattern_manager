@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator nestgraphql {
+  provider           = "node node_modules/prisma-nestjs-graphql"
+  output             = "../src/@generated"
+  noAtomicOperations = true
+
+  // field validator
+  fields_Validator_input  = true
+  fields_Validator_output = true
+  fields_Validator_model  = true
+  fields_Validator_from   = "class-validator"
+
+  // All relations, only allow connect
+  decorate_all_type                  = "!(ActivityTarget*Input|UserSettingsUpdateOneRequiredWithoutUserNestedInput)"
+  decorate_all_field                 = "*(create|connectOrCreate|update|upsert|delete|createMany|updateMany|deleteMany)"
+  decorate_all_name                  = "HideField"
+  decorate_all_from                  = "@nestjs/graphql"
+  decorate_all_arguments             = "[]"
+  emitBlocks                         = ["models"]
+  // Activity: Only Allow targets createOrConnect / createMany
+  decorate_activityTargets_type      = "*ActivityTarget*Input"
+  decorate_activityTargets_field     = "*(update|upsert|updateMany)"
+  decorate_activityTargets_name      = "HideField"
+  decorate_activityTargets_from      = "@nestjs/graphql"
+  decorate_activityTargets_arguments = "[]"
+
+  // User Settings: Only Allow targets createOrConnect / createMany
+  decorate_userSettings_type      = "*UserSettingsUpdateOneRequiredWithoutUserNestedInput"
+  decorate_userSettings_field     = "!(update)"
+  decorate_userSettings_name      = "HideField"
+  decorate_userSettings_from      = "@nestjs/graphql"
+  decorate_userSettings_arguments = "[]"
+
+  // Disable _count on all models except Aggregation use case
+  decorate_count_type      = "!(*Aggregate*|*GroupBy*|*OrderBy*)"
+  decorate_count_field     = "_count"
+  decorate_count_name      = "HideField"
+  decorate_count_from      = "@nestjs/graphql"
+  decorate_count_arguments = "[]"
+
+  // create data validator
+  decorate_classValidator_type      = "@(Create|Update|Upsert)*Args"
+  decorate_classValidator_field     = "@(data|[A-Z]*)"
+  decorate_classValidator_name      = ValidateNested
+  decorate_classValidator_from      = "class-validator"
+  decorate_classValidator_arguments = "['{each: true}']"
+
+  // create data transformer
+  decorate_classTransformer_type      = "@(Create|Update|Upsert)*Args"
+  decorate_classTransformer_field     = "@(data|[A-Z]*)"
+  decorate_classTransformer_from      = "class-transformer"
+  decorate_classTransformer_arguments = "['() => {propertyType.0}']"
+  decorate_classTransformer_name      = Type
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  email         String          @unique
+  firstName     String?
+  lastName      String?
+  phone         String?
+  password      String
+  subscribed    Boolean?        @default(false)
+  comments      Comment[]
+  Avatar        String[]
+  Reply         Reply[]         @relation("ReplyToComment")
+  Post          Post[]
+  ReplyReaction ReplyReaction[]
+  PostReaction  PostReaction[]
+}
+
+model Post {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  image     String?        @unique
+  title     String
+  content   String
+  Image     String[]
+  createdAt DateTime       @default(now())
+  authorId  String         @db.ObjectId
+  comments  Comment[]
+  author    User           @relation(fields: [authorId], references: [id])
+  reactions PostReaction[]
+}
+
+model PostReaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  userId    String   @db.ObjectId
+  reaction  Reaction
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model ReplyReaction {
+  id       String   @id() @default(auto()) @map("_id") @db.ObjectId
+  replyId  String   @db.ObjectId
+  userId   String   @db.ObjectId
+  reaction Reaction
+  User     User     @relation(fields: [userId], references: [id])
+  Reply    Reply    @relation(fields: [replyId], references: [id])
+}
+
+enum Reaction {
+  LIKE
+  DISLIKE
+}
+
+model Reply {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  text          String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  userId        String          @db.ObjectId
+  commentId     String          @db.ObjectId
+  ReplyReaction ReplyReaction[]
+  User          User            @relation("ReplyToComment", fields: [userId], references: [id])
+  Comment       Comment         @relation("ReplyToComment", fields: [commentId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  userId    String   @db.ObjectId
+  User      User     @relation(fields: [userId], references: [id])
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Reply     Reply[]  @relation("ReplyToComment")
+  Post      Post?    @relation(fields: [postId], references: [id])
+}

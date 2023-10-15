@@ -1,0 +1,81 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Reply {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: String!
+  commentId: String!
+  likesCount: Int!
+  dislikesCount: Int!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Comment {
+  id: ID!
+  postId: String!
+  userId: String!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  Reply: [Reply!]
+}
+
+type Post {
+  id: ID!
+  image: String
+  title: String!
+  content: String!
+  Image: [String!]
+  createdAt: DateTime!
+  authorId: String!
+  comments: [Comment!]
+  likesCount: Int!
+  dislikesCount: Int!
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  phone: String
+  password: String!
+  subscribed: Boolean
+  Avatar: [String!]
+  Post: [Post!]
+}
+
+type JwtResponse {
+  jwt_token: String!
+}
+
+type Query {
+  users(id: String, take: Int): [User!]!
+  LatestPosts: Post!
+}
+
+type Mutation {
+  signUp(email: String!, password: String!): User!
+  login(email: String!, password: String!): JwtResponse!
+  UpdateProfile(email: String, firstName: String, lastName: String, phone: String, password: String, subscribed: Boolean, Avatar: Upload): User!
+  DeleteAvatar(avatar_filename: [String!]!): String!
+  createPost(createPostArgs: PostCreateInput!): Post!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input PostCreateInput {
+  title: String!
+  content: String!
+  Image: [Upload!]
+  author: String!
+}
