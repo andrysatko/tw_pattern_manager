@@ -67,15 +67,9 @@ type Mutation {
   login(email: String!, password: String!): JwtResponse!
   UpdateProfile(email: String, firstName: String, lastName: String, phone: String, password: String, subscribed: Boolean, Avatar: Upload): User!
   DeleteAvatar(avatar_filename: [String!]!): String!
-  createPost(createPostArgs: PostCreateInput!): Post!
+  createPost(title: String!, content: String!, Image: [Upload!]!): Post!
+  DeleteSelectedPhotos(Images: [String!]!): Post!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
-
-input PostCreateInput {
-  title: String!
-  content: String!
-  Image: [Upload!]
-  author: String!
-}

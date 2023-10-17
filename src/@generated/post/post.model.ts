@@ -13,9 +13,6 @@ export class Post {
     @Field(() => ID, {nullable:false})
     id!: string;
 
-    @Field(() => String, {nullable:true})
-    image!: string | null;
-
     @Field(() => String, {nullable:false})
     title!: string;
 

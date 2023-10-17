@@ -49,6 +49,8 @@ export class ProfileService {
   }
 
   async DeleteAvatar(_avatar_index: string[], _user_id: string) {
+    const user = await this.userService.findUnique({ where: { id: _user_id } });
+    assert(user, ForbiddenException, 'Unauthorized exception - login and try again');
     const result = await this.prismaService.$runCommandRaw({
       update: 'User',
       updates: [{

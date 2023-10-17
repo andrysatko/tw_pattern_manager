@@ -1,9 +1,9 @@
-import { Field } from '@nestjs/graphql';
+import { ArgsType, Field } from "@nestjs/graphql";
 import { InputType } from '@nestjs/graphql';
 import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 import * as Upload from 'graphql-upload/Upload.js';
 import { Type } from 'class-transformer';
-@InputType()
+@ArgsType()
 export class PostCreateInput {
   @Field(() => String, { nullable: false })
   @Type(() => String)
@@ -13,11 +13,7 @@ export class PostCreateInput {
   @Type(() => String)
   content!: string;
 
-  @Field(() => [GraphQLUpload], { nullable: true })
+  @Field(() => [GraphQLUpload], { nullable: false })
   @Type(() => GraphQLUpload)
-  Image?: Array<Upload.FileUpload>;
-
-  @Field(() => String, { nullable: false })
-  @Type(() => String)
-  author!: string;
+  Image!: Array<Upload.FileUpload>;
 }
