@@ -11,6 +11,7 @@ import { UserService } from '../user/user.service';
 import fs from 'fs';
 import path from 'path';
 import process from 'process';
+import { GetPostOptions } from './dto/findOptions_post_gql';
 
 @Injectable()
 export class PostService {
@@ -19,6 +20,36 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
+  // Find
+  findFirst = this.prismaService.post.findFirst;
+  findFirstOrThrow = this.prismaService.post.findFirstOrThrow;
+
+  findUnique = this.prismaService.post.findUnique;
+  findUniqueOrThrow = this.prismaService.post.findUniqueOrThrow;
+
+  findMany = this.prismaService.post.findMany;
+
+  // Create
+  create = this.prismaService.post.create;
+  createMany = this.prismaService.post.createMany;
+
+  // Update
+  update = this.prismaService.post.update;
+  upsert = this.prismaService.post.upsert;
+  updateMany = this.prismaService.post.updateMany;
+
+  // Delete
+  delete = this.prismaService.post.delete;
+  deleteMany = this.prismaService.post.deleteMany;
+
+  // Aggregate
+  aggregate = this.prismaService.post.aggregate;
+
+  // Count
+  count = this.prismaService.post.count;
+
+  // GroupBy
+  groupBy = this.prismaService.post.groupBy;
   getLatestPosts() {
     return this.prismaService.post.findMany({
       include: { comments: true, reactions: true },
@@ -45,10 +76,27 @@ export class PostService {
       data: { ...createProductsArgs, Image: FNameArray, authorId: user.id },
     });
   }
+  async GetPostFo__User(findOptions?: GetPostOptions){
+    const UserSPost = await this.prismaService.post.findMany({
+      where: { authorId: findOptions.userId },
+      orderBy: { createdAt: findOptions.orderBy ?? 'asc' },
+      take: findOptions.take ?? 10,
+      skip: findOptions.skip ?? 0,
+      cursor: findOptions.cursor ? { id: findOptions.cursor } : undefined,
+      include: { comments: true, reactions: true },
+    });
+    // UserSPost.map(post => )
+    const totalCount = await this.count();
+    return { Post_count: totalCount, posts: UserSPost };
+  }
 
   async DeleteSelectedPhotos(_Images: string[], _user_id: string) {
     const user = await this.userService.findUnique({ where: { id: _user_id } });
-    assert(user, ForbiddenException, 'Unauthorized exception - login and try again',);
+    assert(
+      user,
+      ForbiddenException,
+      'Unauthorized exception - login and try again',
+    );
     const result = await this.prismaService.$runCommandRaw({
       update: 'Post',
       updates: [
@@ -70,5 +118,11 @@ export class PostService {
         });
       });
     }
+  }
+
+  async DeletePost(_post_id: string, _user_id: string) {
+    await this.prismaService.post.delete({
+      where: { id: _post_id, authorId: _user_id },
+    });
   }
 }

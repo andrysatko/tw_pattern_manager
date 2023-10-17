@@ -57,8 +57,14 @@ type JwtResponse {
   jwt_token: String!
 }
 
+type Selected_Posts_with_countModel {
+  posts: [Post!]!
+  Post_count: Int!
+}
+
 type Query {
   users(id: String, take: Int): [User!]!
+  GetPostFo__User(userId: String!, take: Int, cursor: String, skip: Int, orderBy: String): Selected_Posts_with_countModel!
   LatestPosts: Post!
 }
 
@@ -69,7 +75,13 @@ type Mutation {
   DeleteAvatar(avatar_filename: [String!]!): String!
   createPost(title: String!, content: String!, Image: [Upload!]!): Post!
   DeleteSelectedPhotos(Images: [String!]!): Post!
+  ReactToThePost(postId: String!, reaction: UserRole!): String!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+enum UserRole {
+  LIKE
+  DISLIKE
+}

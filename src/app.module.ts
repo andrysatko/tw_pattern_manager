@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProfileModule } from './profile/profile.module';
 import { PostModule } from './post/post.module';
+import { ReactionPostModule } from './reaction_post/reaction_post.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -23,6 +24,7 @@ import { PostModule } from './post/post.module';
     AuthModule,
     ProfileModule,
     PostModule,
+    ReactionPostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
