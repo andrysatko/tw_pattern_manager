@@ -37,8 +37,8 @@ type Post {
   createdAt: DateTime!
   authorId: String!
   comments: [Comment!]
-  likesCount: Int!
-  dislikesCount: Int!
+  Likes: Int!
+  Dislikes: Int!
 }
 
 type User {
@@ -76,6 +76,7 @@ type Mutation {
   createPost(title: String!, content: String!, Image: [Upload!]!): Post!
   DeleteSelectedPhotos(Images: [String!]!): Post!
   ReactToThePost(postId: String!, reaction: UserRole!): String!
+  DeleteReaction(post_id: String!): String!
 }
 
 """The `Upload` scalar type represents a file upload."""

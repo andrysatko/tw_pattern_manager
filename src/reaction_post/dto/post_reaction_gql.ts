@@ -1,8 +1,8 @@
 import { ArgsType, Field, registerEnumType } from '@nestjs/graphql';
 
 enum UserRole {
-  LIKE = 'like',
-  DISLIKE = 'dislike',
+  LIKE = 'LIKE',
+  DISLIKE = 'DISLIKE',
 }
 
 registerEnumType(UserRole, {

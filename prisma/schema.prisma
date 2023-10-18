@@ -86,6 +86,8 @@ model Post {
   content   String
   Image     String[]
   createdAt DateTime       @default(now())
+  Likes     Int            @default(0)
+  Dislikes  Int            @default(0)
   authorId  String         @db.ObjectId
   comments  Comment[]
   author    User           @relation(fields: [authorId], references: [id])

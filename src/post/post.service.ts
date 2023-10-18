@@ -85,7 +85,6 @@ export class PostService {
       cursor: findOptions.cursor ? { id: findOptions.cursor } : undefined,
       include: { comments: true, reactions: true },
     });
-    // UserSPost.map(post => )
     const totalCount = await this.count();
     return { Post_count: totalCount, posts: UserSPost };
   }

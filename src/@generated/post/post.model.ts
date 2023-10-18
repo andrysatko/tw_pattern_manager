@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
+import { Int } from '@nestjs/graphql';
 import { Comment } from '../comment/comment.model';
 import { User } from '../user/user.model';
 import { PostReaction } from '../post-reaction/post-reaction.model';
@@ -24,6 +25,12 @@ export class Post {
 
     @Field(() => Date, {nullable:false})
     createdAt!: Date;
+
+    @Field(() => Int, {nullable:false,defaultValue:0})
+    Likes!: number;
+
+    @Field(() => Int, {nullable:false,defaultValue:0})
+    Dislikes!: number;
 
     @Field(() => String, {nullable:false})
     authorId!: string;

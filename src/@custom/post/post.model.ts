@@ -29,8 +29,8 @@ export class Post {
   comments?: Array<Comment>;
 
   @Field(() => Int, { nullable: false })
-  likesCount: number;
+  Likes: number;
 
   @Field(() => Int, { nullable: false })
-  dislikesCount: number;
+  Dislikes: number;
 }

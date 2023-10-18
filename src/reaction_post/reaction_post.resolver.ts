@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { ReactionPostService } from './reaction_post.service';
 import { UseGuards } from '@nestjs/common';
 import { User } from '../@custom/user/user.model';
@@ -21,4 +21,9 @@ export class ReactionPostResolver {
       PostReaction.reaction,
     );
   }
+  @Mutation(() => String)
+  @UseGuards(GqlAuthGuard)
+  DeleteReaction(@Args('post_id') post_id: string, @CurrentUser() user: User) {
+    return this.reactionPostService.DeleteReaction(user.id, post_id);
+}
 }
