@@ -9,6 +9,7 @@ import { User } from '../@custom/user/user.model';
 import { Delete_Selected_Photos_Gql } from './dto/delete_photo_gql';
 import { GetPostOptions } from './dto/findOptions_post_gql';
 import { Selected_Posts_with_countModel } from '../@custom/post/post-count.output';
+import { GetPostFilter } from './dto/getPost_postFilter_gql';
 
 @Resolver()
 export class PostResolver {
@@ -17,6 +18,10 @@ export class PostResolver {
   @Query(() => Selected_Posts_with_countModel)
   GetPostFo__User(@Args() dto: GetPostOptions) {
     return this.postService.GetPostFo__User(dto);
+  }
+  @Query(() => [Post])
+  GetPost_Filter(@Args() dto: GetPostFilter) {
+    return this.postService.GetPosts_WithFilter(dto);
   }
 
   @Mutation(() => Post)

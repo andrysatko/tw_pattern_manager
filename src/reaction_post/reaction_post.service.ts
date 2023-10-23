@@ -23,7 +23,7 @@ export class ReactionPostService {
           data: { reaction: reaction },
         });
         const inc = Reaction.reaction == 'LIKE' ? { Dislikes: 1 } : { Likes: 1 },
-          dec = Reaction.reaction !== 'DISLIKE' ? { Likes: -1 } : { Dislikes: -1 };
+              dec = Reaction.reaction !== 'DISLIKE' ? { Likes: -1 } : { Dislikes: -1 };
         await this.prismaService.$runCommandRaw({
           update: 'Post',
           updates: [{
@@ -51,7 +51,7 @@ export class ReactionPostService {
     return reaction;
   }
 
-  async DeleteReaction(_user_id: string, _post_id: string){
+  async DeleteReaction(_user_id: string, _post_id: string) {
     const result = await this.prismaService.postReaction.deleteMany({
       where: { userId: _user_id, postId: _post_id },
     });

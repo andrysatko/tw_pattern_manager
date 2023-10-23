@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProfileModule } from './profile/profile.module';
 import { PostModule } from './post/post.module';
 import { ReactionPostModule } from './reaction_post/reaction_post.module';
+import { CommentsModule } from './comments/comments.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -25,6 +26,7 @@ import { ReactionPostModule } from './reaction_post/reaction_post.module';
     ProfileModule,
     PostModule,
     ReactionPostModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,7 +12,9 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { GetPostOptions } from './dto/findOptions_post_gql';
-
+import { GetPostFilter } from './dto/getPost_postFilter_gql';
+import type { Prisma } from '@prisma/client';
+type OrderByType = Prisma.PostOrderByWithRelationInput;
 @Injectable()
 export class PostService {
   constructor(
@@ -88,7 +90,23 @@ export class PostService {
     const totalCount = await this.count();
     return { Post_count: totalCount, posts: UserSPost };
   }
-
+  async GetPosts_WithFilter(GetPostFilter: GetPostFilter) {
+    const Filter_Result = (filter: OrderByType) =>
+      this.prismaService.post.findMany({
+        orderBy: filter,
+        include: { comments: true, reactions: true },
+      });
+    switch (GetPostFilter.FilterBy) {
+      case 'recent':
+        return Filter_Result({ createdAt: 'desc' });
+      case 'oldest':
+        return Filter_Result({ createdAt: 'asc' });
+      case 'most_popular':
+        return Filter_Result({ Likes: 'desc' });
+      default:
+        throw new BadRequestException('Invalid filter');
+    }
+  }
   async DeleteSelectedPhotos(_Images: string[], _user_id: string) {
     const user = await this.userService.findUnique({ where: { id: _user_id } });
     assert(
