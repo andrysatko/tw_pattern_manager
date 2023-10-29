@@ -1,11 +1,11 @@
 import { ArgsType, Field, registerEnumType } from '@nestjs/graphql';
 
-enum UserRole {
+enum ReactionEnum {
   LIKE = 'LIKE',
   DISLIKE = 'DISLIKE',
 }
 
-registerEnumType(UserRole, {
+registerEnumType(ReactionEnum, {
   name: 'UserRole',
 });
 
@@ -13,6 +13,6 @@ registerEnumType(UserRole, {
 export class PostReaction_GQL {
   @Field(() => String, { nullable: false })
   postId: string;
-  @Field(() => UserRole, { nullable: false })
-  reaction: UserRole;
+  @Field(() => ReactionEnum, { nullable: false })
+  reaction: ReactionEnum;
 }

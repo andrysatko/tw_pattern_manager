@@ -64,6 +64,7 @@ type Selected_Posts_with_countModel {
 
 type Query {
   users(id: String, take: Int): [User!]!
+  User_info: User!
   GetPostFo__User(userId: String!, take: Int, cursor: String, skip: Int, orderBy: String): Selected_Posts_with_countModel!
   GetPost_Filter(FilterBy: String!): [Post!]!
   LatestPosts: Post!

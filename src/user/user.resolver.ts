@@ -3,6 +3,9 @@ import { Query } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from '../@custom/user/user.model';
 import { GetUsersFilter } from './dto/get_users_args_gql';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from '../guards/gql-auth.guard';
+import { CurrentUser } from '../decorators/gql.user-context.decorator';
 // import { UserUpdateInput } from './dto/update_user_gql';
 
 @Resolver(() => User)
@@ -17,5 +20,12 @@ export class UserResolver {
   async users(@Args() args: GetUsersFilter): Promise<User[]> {
     const users = await this.userService.getUsers(args.take, args.id);
     return users as any;
+  }
+
+  @Query(() => User)
+  @UseGuards(GqlAuthGuard)
+  async User_info(@CurrentUser() user: User): Promise<User> {
+    const User = await this.userService.findOne(user.id);
+    return User as User;
   }
 }
