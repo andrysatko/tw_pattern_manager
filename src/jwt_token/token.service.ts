@@ -20,7 +20,7 @@ export class TokenService {
       expiresIn: '3h',
     });
   }
-  decodeJwtToken(token: string) {
-    return this.jwtService.decode(token.replace('Bearer ', ''));
+  decodeJwtToken(AuthorizationHeader: string) {
+    return this.jwtService.decode(AuthorizationHeader.replace('Bearer ', ''));
   }
 }

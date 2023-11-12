@@ -25,7 +25,7 @@ export async function Perform_file(file: Promise<Upload.FileUpload>,width = 100,
   stream.pipe(out);
   await finished(out);
   gm(OutPutDir)
-    .resize(width, height, '!')
+    .resize(width, height, '!').noProfile()
     .write(OutPutDir, function (err) {
       if (err) console.log(err);
     });

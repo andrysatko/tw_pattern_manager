@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module ,NestModule, MiddlewareConsumer} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -12,6 +12,8 @@ import { ProfileModule } from './profile/profile.module';
 import { PostModule } from './post/post.module';
 import { ReactionPostModule } from './reaction_post/reaction_post.module';
 import { CommentsModule } from './comments/comments.module';
+import { MailingModule } from './email/mailing.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -27,8 +29,15 @@ import { CommentsModule } from './comments/comments.module';
     PostModule,
     ReactionPostModule,
     CommentsModule,
+    MailingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+        .apply(LoggerMiddleware)
+        .forRoutes('*');
+  }
+}

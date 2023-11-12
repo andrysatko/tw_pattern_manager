@@ -65,19 +65,20 @@ generator nestgraphql {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  email         String          @unique
-  firstName     String?
-  lastName      String?
-  phone         String?
-  password      String
-  subscribed    Boolean?        @default(false)
-  comments      Comment[]
-  Avatar        String[]
-  Reply         Reply[]         @relation("ReplyToComment")
-  Post          Post[]
-  ReplyReaction ReplyReaction[]
-  PostReaction  PostReaction[]
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  email          String          @unique
+  firstName      String?
+  lastName       String?
+  phone          String?
+  password       String
+  EmailConfirmed Boolean         @default(false)
+  subscribed     Boolean?        @default(false)
+  comments       Comment[]
+  Avatar         String[]
+  Reply          Reply[]         @relation("ReplyToComment")
+  Post           Post[]
+  ReplyReaction  ReplyReaction[]
+  PostReaction   PostReaction[]
 }
 
 model Post {

@@ -30,6 +30,9 @@ export class User {
     @Field(() => String, {nullable:false})
     password!: string;
 
+    @Field(() => Boolean, {nullable:false,defaultValue:false})
+    EmailConfirmed!: boolean;
+
     @Field(() => Boolean, {nullable:true,defaultValue:false})
     subscribed!: boolean | null;
 
