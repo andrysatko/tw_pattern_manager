@@ -26,6 +26,7 @@ type Comment {
   createdAt: DateTime!
   updatedAt: DateTime!
   Reply: [Reply!]
+  User: PublicUser!
 }
 
 type Post {
@@ -35,10 +36,14 @@ type Post {
   content: String!
   Image: [String!]
   createdAt: DateTime!
-  authorId: String!
+  author: PublicUser!
   comments: [Comment!]
   Likes: Int!
   Dislikes: Int!
+}
+
+type MyReactionToPost {
+  reaction: String
 }
 
 type User {
@@ -53,6 +58,13 @@ type User {
   Post: [Post!]
 }
 
+type PublicUser {
+  id: ID!
+  firstName: String
+  lastName: String
+  Avatar: [String!]
+}
+
 type JwtResponse {
   jwt_token: String!
 }
@@ -62,12 +74,20 @@ type Selected_Posts_with_countModel {
   Post_count: Int!
 }
 
+type ALLCommentsPaginationOutput {
+  comments: [Comment!]!
+  TotalCommentsCount: Int!
+}
+
 type Query {
   users(id: String, take: Int): [User!]!
   User_info: User!
   GetPostFo__User(userId: String!, take: Int, cursor: String, skip: Int, orderBy: String): Selected_Posts_with_countModel!
+  GetMyReactionForPost(_post_id: String!): MyReactionToPost!
   GetPost_Filter(FilterBy: String!): [Post!]!
   LatestPosts: Post!
+  GetPostById(_id: String!): Post!
+  GetComments_ForPost(postId: String!, take: Int, cursor: String, skip: Int, orderBy: String): ALLCommentsPaginationOutput!
 }
 
 type Mutation {
@@ -79,6 +99,7 @@ type Mutation {
   DeleteSelectedPhotos(Images: [String!]!): Post!
   ReactToThePost(postId: String!, reaction: UserRole!): String!
   DeleteReaction(post_id: String!): String!
+  createComment(_post_id: String!, reply: String!): Comment!
 }
 
 """The `Upload` scalar type represents a file upload."""

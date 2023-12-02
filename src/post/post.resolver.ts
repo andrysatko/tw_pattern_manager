@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PostService } from './post.service';
-import { Post } from '../@custom/post/post.model';
+import {MyReactionToPost, Post} from '../@custom/post/post.model';
 import { PostCreateInput } from './dto/create_post_gql';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../guards/gql-auth.guard';
@@ -10,6 +10,7 @@ import { Delete_Selected_Photos_Gql } from './dto/delete_photo_gql';
 import { GetPostOptions } from './dto/findOptions_post_gql';
 import { Selected_Posts_with_countModel } from '../@custom/post/post-count.output';
 import { GetPostFilter } from './dto/getPost_postFilter_gql';
+import {GetMyPostReaction_gql} from "./dto/GetMYpostReaction_gql";
 
 @Resolver()
 export class PostResolver {
@@ -18,6 +19,13 @@ export class PostResolver {
   @Query(() => Selected_Posts_with_countModel)
   GetPostFo__User(@Args() dto: GetPostOptions) {
     return this.postService.GetPostFo__User(dto);
+  }
+  @UseGuards(GqlAuthGuard)
+  @Query(()=> MyReactionToPost)
+  async GetMyReactionForPost(@Args() GetMYPostReactoin:GetMyPostReaction_gql,@CurrentUser() user:User){
+    const res =  this.postService.GetMyReactionForPost(GetMYPostReactoin._post_id,user.id)
+    console.log(await res)
+    return res;
   }
   @Query(() => [Post])
   GetPost_Filter(@Args() dto: GetPostFilter) {
@@ -38,5 +46,10 @@ export class PostResolver {
   @UseGuards(GqlAuthGuard)
   DeleteSelectedPhotos(@Args() dto: Delete_Selected_Photos_Gql, @CurrentUser() user: User){
     return this.postService.DeleteSelectedPhotos(dto.Images, user.id);
+  }
+
+  @Query(()=>Post)
+  GetPostById(@Args('_id') _id:string){
+    return this.postService.findFirst({where:{id:_id}});
   }
 }

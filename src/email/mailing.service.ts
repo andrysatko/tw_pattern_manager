@@ -26,7 +26,7 @@ export class MailingService {
             {
                 from: {
                     name: 'No-reply',
-                    address: "FelizNavidad)",
+                    address: configService.get<string>("MAIL_FROM"),
                 },
             },
         );
@@ -54,5 +54,5 @@ export class MailingService {
         });
     }
 
-
+    // Other email sending methods...
 }

@@ -2,6 +2,7 @@ import { Field, Int } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Comment } from '../comment/comment.model';
+import {PublicUser} from "../user/user.model";
 @ObjectType()
 export class Post {
   @Field(() => ID, { nullable: false })
@@ -22,8 +23,8 @@ export class Post {
   @Field(() => Date, { nullable: false })
   createdAt!: Date;
 
-  @Field(() => String, { nullable: false })
-  authorId!: string;
+  @Field(() => PublicUser, { nullable: false })
+  author: PublicUser;
 
   @Field(() => [Comment], { nullable: true })
   comments?: Array<Comment>;
@@ -33,4 +34,10 @@ export class Post {
 
   @Field(() => Int, { nullable: false })
   Dislikes: number;
+}
+
+@ObjectType()
+export class MyReactionToPost{
+  @Field(() => String, { nullable: true })
+  reaction:String
 }

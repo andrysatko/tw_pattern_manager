@@ -85,10 +85,13 @@ export class PostService {
       take: findOptions.take ?? 10,
       skip: findOptions.skip ?? 0,
       cursor: findOptions.cursor ? { id: findOptions.cursor } : undefined,
-      include: { comments: true, reactions: true },
+      include: { comments: {take:10}, reactions: true,author:true},
     });
-    const totalCount = await this.count();
+    const totalCount = await this.count({where:{authorId:findOptions.userId}})
     return { Post_count: totalCount, posts: UserSPost };
+  }
+  async GetMyReactionForPost(_post_id:string,_user_id:string){
+    return this.prismaService.postReaction.findFirst({where: {postId: _post_id, userId: _user_id}});
   }
   async GetPosts_WithFilter(GetPostFilter: GetPostFilter) {
     const Filter_Result = (filter: OrderByType) =>

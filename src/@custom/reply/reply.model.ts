@@ -23,8 +23,8 @@ export class Reply {
   commentId!: string;
 
   @Field(() => Int, { nullable: false })
-  likesCount: number;
+  likesCount!: number;
 
   @Field(() => Int, { nullable: false })
-  dislikesCount: number;
+  dislikesCount!: number;
 }

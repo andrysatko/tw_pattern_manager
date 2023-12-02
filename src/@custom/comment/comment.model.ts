@@ -2,7 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Reply } from '../reply/reply.model';
-
+import {PublicUser, User} from "../user/user.model";
 
 @ObjectType()
 export class Comment {
@@ -26,4 +26,7 @@ export class Comment {
 
   @Field(() => [Reply], { nullable: true })
   Reply?: Array<Reply>;
+
+  @Field(()=>PublicUser, {nullable:false})
+  User:PublicUser;
 }

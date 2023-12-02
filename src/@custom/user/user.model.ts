@@ -33,3 +33,18 @@ export class User {
   @Field(() => [Post], { nullable: true })
   Post?: Array<Post>;
 }
+
+@ObjectType()
+export class PublicUser {
+  @Field(() => ID, { nullable: false })
+  id!: string;
+
+  @Field(() => String, { nullable: true })
+  firstName!: string | null;
+
+  @Field(() => String, { nullable: true })
+  lastName!: string | null;
+
+  @Field(() => [String], { nullable: true })
+  Avatar!: Array<string>;
+}

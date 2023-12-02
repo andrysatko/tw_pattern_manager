@@ -1,6 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { assert } from '../utils/assert';
+import {GetCommentsOptions} from "./dto/GetCommentsDto";
+import {ALLCommentsPaginationOutput} from "../@custom/comment/ALLCommentsPagination.output";
+import {Comment} from "../@custom/comment/comment.model";
+import {count} from "rxjs";
 
 @Injectable()
 export class CommentsService {
@@ -73,5 +77,23 @@ export class CommentsService {
       },
     });
     return reaction;
+  }
+  async getCommentsForPost(getCommentsForPost: GetCommentsOptions):Promise<ALLCommentsPaginationOutput>{
+    const post = await this.prismaService.post.findUnique({where:{id:getCommentsForPost.postId}})
+    assert(post,BadRequestException,'Post that you are trying to comments for, no more exists')
+    const comments = await this.prismaService.comment.findMany({
+      where: { postId: getCommentsForPost.postId },
+      orderBy: { createdAt: getCommentsForPost.orderBy ?? 'asc' },
+      take: getCommentsForPost.take ?? 10,
+      skip: getCommentsForPost.skip !== undefined ? getCommentsForPost.skip :(getCommentsForPost.cursor !== undefined ? 1 : 0),
+      cursor: getCommentsForPost.cursor ? { id: getCommentsForPost.cursor } : undefined,
+      include: { Reply: true, User: {select:{id:true,firstName:true,lastName:true,Avatar:true}}},
+    });
+    assert(comments,BadRequestException,'No more comments')
+    const totalCount =await this.prismaService.comment.count({where:{postId:getCommentsForPost.postId}})
+    return {
+      comments: comments as any,
+      TotalCommentsCount: totalCount,
+    };
   }
 }
