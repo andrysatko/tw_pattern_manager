@@ -40,7 +40,7 @@ export class ReactionPostService {
     const New_Reaction = await this.prismaService.postReaction.create({
       data: { userId: _user_id, postId: _post_id, reaction: reaction },
     });
-    this.prismaService.post.update({
+    Reaction && await this.prismaService.post.update({
       where: { id: New_Reaction.postId },
       data: {
         ...(reaction === 'LIKE'
