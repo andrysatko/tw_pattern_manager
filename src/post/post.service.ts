@@ -85,7 +85,7 @@ export class PostService {
       take: findOptions.take ?? 10,
       skip: findOptions.skip ?? 0,
       cursor: findOptions.cursor ? { id: findOptions.cursor } : undefined,
-      include: { comments: {take:10}, reactions: true,author:true},
+      include: { comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
     });
     const totalCount = await this.count({where:{authorId:findOptions.userId}})
     return { Post_count: totalCount, posts: UserSPost };
@@ -94,17 +94,23 @@ export class PostService {
     return this.prismaService.postReaction.findFirst({where: {postId: _post_id, userId: _user_id}});
   }
   async GetPosts_WithFilter(GetPostFilter: GetPostFilter) {
-    const Filter_Result = (filter: OrderByType) =>
-      this.prismaService.post.findMany({
+    const totalCount = await this.count()
+    const Filter_Result = async (filter: OrderByType) => {
+      const FilterRedPost = await this.prismaService.post.findMany({
         orderBy: filter,
-        include: { comments: true, reactions: true },
+        take:10,
+        include: { comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
+        cursor: {id: GetPostFilter.Cursor},
+        skip: GetPostFilter.Cursor ? 1 : 0
       });
+      return { Post_count: totalCount, posts: FilterRedPost };
+    }
     switch (GetPostFilter.FilterBy) {
-      case 'recent':
+      case 'RECENT':
         return Filter_Result({ createdAt: 'desc' });
-      case 'oldest':
+      case 'OLDEST':
         return Filter_Result({ createdAt: 'asc' });
-      case 'most_popular':
+      case 'MOST_POPULAR':
         return Filter_Result({ Likes: 'desc' });
       default:
         throw new BadRequestException('Invalid filter');

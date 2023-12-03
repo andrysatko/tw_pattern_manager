@@ -27,7 +27,7 @@ export class PostResolver {
     console.log(await res)
     return res;
   }
-  @Query(() => [Post])
+  @Query(() => [Selected_Posts_with_countModel])
   GetPost_Filter(@Args() dto: GetPostFilter) {
     return this.postService.GetPosts_WithFilter(dto);
   }
@@ -50,6 +50,6 @@ export class PostResolver {
 
   @Query(()=>Post)
   GetPostById(@Args('_id') _id:string){
-    return this.postService.findFirst({where:{id:_id}});
+    return this.postService.findFirst({where:{id:_id},include:{ comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},});
   }
 }

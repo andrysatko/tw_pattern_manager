@@ -31,7 +31,6 @@ type Comment {
 
 type Post {
   id: ID!
-  image: String
   title: String!
   content: String!
   Image: [String!]
@@ -84,10 +83,17 @@ type Query {
   User_info: User!
   GetPostFo__User(userId: String!, take: Int, cursor: String, skip: Int, orderBy: String): Selected_Posts_with_countModel!
   GetMyReactionForPost(_post_id: String!): MyReactionToPost!
-  GetPost_Filter(FilterBy: String!): [Post!]!
+  GetPost_Filter(FilterBy: TFilterByEnum = RECENT, Cursor: String): [Selected_Posts_with_countModel!]!
   LatestPosts: Post!
   GetPostById(_id: String!): Post!
   GetComments_ForPost(postId: String!, take: Int, cursor: String, skip: Int, orderBy: String): ALLCommentsPaginationOutput!
+}
+
+"""Description for MyEnum"""
+enum TFilterByEnum {
+  MOST_POPULAR
+  RECENT
+  OLDEST
 }
 
 type Mutation {
