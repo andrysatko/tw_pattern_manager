@@ -49,7 +49,8 @@ export class PostResolver {
   }
 
   @Query(()=>Post)
-  GetPostById(@Args('_id') _id:string){
-    return this.postService.findFirst({where:{id:_id},include:{ comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},});
+  async GetPostById(@Args('_id') _id:string){
+    const res =  await this.postService.findFirst({where:{id:_id},include:{ _count:{select:{comments:true}}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},});
+    return res
   }
 }

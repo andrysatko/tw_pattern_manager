@@ -2,31 +2,8 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Reply {
-  id: ID!
-  text: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  userId: String!
-  commentId: String!
-  likesCount: Int!
-  dislikesCount: Int!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type Comment {
-  id: ID!
-  postId: String!
-  userId: String!
-  text: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  Reply: [Reply!]
-  User: PublicUser!
+type AdditionalCount {
+  comments: Int!
 }
 
 type Post {
@@ -36,10 +13,15 @@ type Post {
   Image: [String!]
   createdAt: DateTime!
   author: PublicUser!
-  comments: [Comment!]
+  _count: AdditionalCount
   Likes: Int!
   Dislikes: Int!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type MyReactionToPost {
   reaction: String
@@ -71,6 +53,28 @@ type JwtResponse {
 type Selected_Posts_with_countModel {
   posts: [Post!]!
   Post_count: Int!
+}
+
+type Reply {
+  id: ID!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: String!
+  commentId: String!
+  likesCount: Int!
+  dislikesCount: Int!
+}
+
+type Comment {
+  id: ID!
+  postId: String!
+  userId: String!
+  text: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  Reply: [Reply!]
+  User: PublicUser!
 }
 
 type ALLCommentsPaginationOutput {

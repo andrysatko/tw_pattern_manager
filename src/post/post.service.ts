@@ -85,7 +85,7 @@ export class PostService {
       take: findOptions.take ?? 10,
       skip: findOptions.skip ?? 0,
       cursor: findOptions.cursor ? { id: findOptions.cursor } : undefined,
-      include: { comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
+      include: { _count:{select:{comments:true}}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
     });
     const totalCount = await this.count({where:{authorId:findOptions.userId}})
     return { Post_count: totalCount, posts: UserSPost };
@@ -99,7 +99,7 @@ export class PostService {
       const FilterRedPost = await this.prismaService.post.findMany({
         orderBy: filter,
         take:10,
-        include: { comments: {take:10}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
+        include: { _count:{select:{comments:true}}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
         cursor: {id: GetPostFilter.Cursor},
         skip: GetPostFilter.Cursor ? 1 : 0
       });

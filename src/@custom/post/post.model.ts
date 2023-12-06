@@ -4,6 +4,12 @@ import { ID } from '@nestjs/graphql';
 import { Comment } from '../comment/comment.model';
 import {PublicUser} from "../user/user.model";
 @ObjectType()
+export class AdditionalCount{
+  @Field(() => Int, { nullable: false })
+  comments: number
+}
+
+@ObjectType()
 export class Post {
   @Field(() => ID, { nullable: false })
   id!: string;
@@ -23,8 +29,8 @@ export class Post {
   @Field(() => PublicUser, { nullable: false })
   author: PublicUser;
 
-  @Field(() => [Comment], { nullable: true })
-  comments?: Array<Comment>;
+  @Field(() => AdditionalCount, { nullable: true })
+  _count: AdditionalCount;
 
   @Field(() => Int, { nullable: false })
   Likes: number;
