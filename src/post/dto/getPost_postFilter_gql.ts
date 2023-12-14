@@ -12,7 +12,7 @@ registerEnumType(TFilterByEnum, {
 @ArgsType()
 export class GetPostFilter {
   @Field(() => TFilterByEnum, { nullable: true,defaultValue:TFilterByEnum.RECENT})
-  FilterBy: TFilterByEnum;
+  FilterBy?: TFilterByEnum;
   @Field(()=>String , {nullable: true})
-  Cursor:string
+  Cursor?:string
 }

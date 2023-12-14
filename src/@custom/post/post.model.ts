@@ -23,6 +23,9 @@ export class Post {
   @Field(() => [String], { nullable: true })
   Image!: Array<string>;
 
+  @Field(() => String, {nullable:true})
+  Video!: string | null;
+
   @Field(() => Date, { nullable: false })
   createdAt!: Date;
 

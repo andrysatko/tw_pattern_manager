@@ -19,7 +19,7 @@ export class ProfileService {
     assert(user, ForbiddenException, 'Unauthorized exception - login and try again');
     let fileName: string | string[];
     if (updateUserDto.Avatar) {
-      fileName = await Perform_file(updateUserDto.Avatar);
+      fileName = await Perform_file(updateUserDto.Avatar,100,100);
       user.Avatar.length === 4 &&
         fs.unlink(
           path.join(process.cwd(), 'public', user.Avatar[0]),

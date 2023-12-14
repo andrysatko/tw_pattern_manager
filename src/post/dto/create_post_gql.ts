@@ -13,7 +13,11 @@ export class PostCreateInput {
   @Type(() => String)
   content!: string;
 
-  @Field(() => [GraphQLUpload], { nullable: false })
+  @Field(() => [GraphQLUpload], { nullable: true })
   @Type(() => GraphQLUpload)
-  Image!: Array<Upload.FileUpload>;
+  Image?: Array<Upload.FileUpload>;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  @Type(() => GraphQLUpload)
+  Video?: Upload.FileUpload | null;
 }

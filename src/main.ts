@@ -10,7 +10,7 @@ async function bootstrap() {
   });
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ limit: '50mb', extended: true }));
-  app.use('/graphql',graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }));
+  app.use('/graphql',graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
   app.use('/static', express.static(path.join(process.cwd(), 'public')));
   await app.listen(3000);
 }

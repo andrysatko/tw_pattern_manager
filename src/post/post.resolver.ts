@@ -27,7 +27,7 @@ export class PostResolver {
     console.log(await res)
     return res;
   }
-  @Query(() => [Selected_Posts_with_countModel])
+  @Query(() => Selected_Posts_with_countModel)
   GetPost_Filter(@Args() dto: GetPostFilter) {
     return this.postService.GetPosts_WithFilter(dto);
   }

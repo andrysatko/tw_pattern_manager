@@ -32,7 +32,7 @@ export class MailingService {
         );
 
         // Load Handlebars templates
-        this.confirmationTemplate = this.loadTemplate('confirmation.hbs');
+        this.confirmationTemplate = this.loadTemplate('../../templates/confirmation.hbs');
     }
 
     private loadTemplate(templateName: string): handlebars.TemplateDelegate {

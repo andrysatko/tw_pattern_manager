@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { PostCreateInput } from './dto/create_post_gql';
 import { assert } from '../utils/assert';
-import { Perform_file } from '../utils/perform_file';
+import {Perform_file, Perform_Video} from '../utils/perform_file';
 import { UserService } from '../user/user.service';
 import fs from 'fs';
 import path from 'path';
@@ -61,22 +61,28 @@ export class PostService {
 
   async createPost(createProductsArgs: PostCreateInput, _user_id: string) {
     const user = await this.userService.findUnique({ where: { id: _user_id } });
-    assert(
-      user,
-      ForbiddenException,
-      'Unauthorized exception - login and try again',
-    );
-    if (createProductsArgs.Image.length > 10)
-      throw new BadRequestException('You can upload only 10 images');
-    const FNameArray: string[] = await Promise.all(
-      createProductsArgs.Image.map((FUpload) => {
-        return Perform_file(FUpload, 1920, 1080);
-      }),
-    );
-    delete createProductsArgs.Image;
-    return this.prismaService.post.create({
-      data: { ...createProductsArgs, Image: FNameArray, authorId: user.id },
-    });
+    assert(user, ForbiddenException, 'Unauthorized exception - login and try again',);
+    console.log(createProductsArgs)
+    assert(createProductsArgs.Image !== null && createProductsArgs.Video !== null, BadRequestException, 'You must upload at least one image or video');
+    if(createProductsArgs.Image){
+      assert(createProductsArgs.Image.length > 10, BadRequestException, 'You can upload only 10 images');
+      const FNameArray: string[] = await Promise.all(
+          createProductsArgs.Image.map((FUpload) => {
+            return Perform_file(FUpload, 900, 900);
+          }),
+      );
+      delete createProductsArgs.Image;
+      return this.prismaService.post.create({
+        data: { ...createProductsArgs, Image: FNameArray, authorId: user.id },
+      });
+    }
+    if(createProductsArgs.Video){
+      const S3_LINK = await Perform_Video(createProductsArgs.Video);
+      delete createProductsArgs.Video;
+      return this.prismaService.post.create({
+        data: { ...createProductsArgs, Video: S3_LINK, authorId: user.id },
+      });
+    }
   }
   async GetPostFo__User(findOptions?: GetPostOptions){
     const UserSPost = await this.prismaService.post.findMany({
@@ -100,7 +106,7 @@ export class PostService {
         orderBy: filter,
         take:10,
         include: { _count:{select:{comments:true}}, reactions: true,author:{select:{id:true,Avatar:true,firstName:true,lastName:true}}},
-        cursor: {id: GetPostFilter.Cursor},
+        cursor:GetPostFilter.Cursor? {id: GetPostFilter.Cursor} : undefined,
         skip: GetPostFilter.Cursor ? 1 : 0
       });
       return { Post_count: totalCount, posts: FilterRedPost };
