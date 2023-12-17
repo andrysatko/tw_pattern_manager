@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { PostCreateInput } from './dto/create_post_gql';
 import { assert } from '../utils/assert';
-import {Perform_file, Perform_Video} from '../utils/perform_file';
+import {File_Perform, Video_Perform} from '../utils/perform_file';
 import { UserService } from '../user/user.service';
 import fs from 'fs';
 import path from 'path';
@@ -65,10 +65,10 @@ export class PostService {
     console.log(createProductsArgs)
     assert(createProductsArgs.Image !== null && createProductsArgs.Video !== null, BadRequestException, 'You must upload at least one image or video');
     if(createProductsArgs.Image){
-      assert(createProductsArgs.Image.length > 10, BadRequestException, 'You can upload only 10 images');
+      assert(createProductsArgs.Image.length <  10, BadRequestException, 'You can upload only 10 images');
       const FNameArray: string[] = await Promise.all(
           createProductsArgs.Image.map((FUpload) => {
-            return Perform_file(FUpload, 900, 900);
+            return File_Perform(FUpload, 900, 900,false);
           }),
       );
       delete createProductsArgs.Image;
@@ -77,10 +77,10 @@ export class PostService {
       });
     }
     if(createProductsArgs.Video){
-      const S3_LINK = await Perform_Video(createProductsArgs.Video);
+      const Link = await Video_Perform(createProductsArgs.Video);
       delete createProductsArgs.Video;
       return this.prismaService.post.create({
-        data: { ...createProductsArgs, Video: S3_LINK, authorId: user.id },
+        data: { ...createProductsArgs, Video: Link, authorId: user.id },
       });
     }
   }

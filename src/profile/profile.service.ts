@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { UserUpdateInput } from './dto/update_user_gql';
-import { Perform_file } from '../utils/perform_file';
+import { File_Perform } from '../utils/perform_file';
 import { assert } from '../utils/assert';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
@@ -19,7 +19,7 @@ export class ProfileService {
     assert(user, ForbiddenException, 'Unauthorized exception - login and try again');
     let fileName: string | string[];
     if (updateUserDto.Avatar) {
-      fileName = await Perform_file(updateUserDto.Avatar,100,100);
+      fileName = await File_Perform(updateUserDto.Avatar,100,100);
       user.Avatar.length === 4 &&
         fs.unlink(
           path.join(process.cwd(), 'public', user.Avatar[0]),
